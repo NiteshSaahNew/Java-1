@@ -63,16 +63,34 @@ System.out.println(add.operate(5, 3));  // Output: 8
 
 ### Common Built-in Functional Interfaces
 
-  |Interface             |Method                |Example                       |
-  |--------------------- |--------------------- |------------------------------|
-  |`Predicate<T>`        |`boolean test(T t)`   |`(x) -> x > 0`                |
-  |`Function<T,R>`       |`R apply(T t)`        |`(x) -> x * 2`                    |
-  |`Consumer<T>`         |`void accept(T t)`    |`x -> System.out.println(x)`      |
-  |`Supplier<T>`         |`T get()`             |`() -> new Random()`              |
-  |`BiFunction<T,U,R>`   |`R apply(T t, U u)`   |`(a,b) -> a+b`                    |
+  |Interface             |Method                |Example                       | Default Method                       |
+  |--------------------- |--------------------- |------------------------------|--------------------------------------|
+  |`Predicate<T>`        |`boolean test(T t)`   |`(x) -> x > 0`                |Has and, or, negate, but not compose.|
+  |`Function<T,R>`       |`R apply(T t)`        |`(x) -> x * 2`                |**andThen**(Function) and **compose**(Function)	Core interface for transformations. Allows **chaining forward** (andThen) and **backward** (compose).|
+  |`Consumer<T>`         |`void accept(T t)`    |`x -> System.out.println(x)`      | Has andThen, but **not** **compose**.|
+  |`Supplier<T>`         |`T get()`             |`() -> new Random()`              |**No** andThen or compose     |
+  |`BiFunction<T,U,R>`   |`R apply(T t, U u)`   |`(a,b) -> a+b`                    |Has **no** andThen or compose.|
+  |`BinaryOperator<T>`   |`R apply(T t, U u)`   |`(a,b) -> a+b`                    | Inherits from BiFunction, so **no** andThen() or compose().|
+  |`UnaryOperator <T>`   |`R apply(T t)`        |`(x) -> x > 0`                |Inherits **andThen**(Function) and **compose**(Function) from Function	.|
 
-------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------
+.
 
+**🔑 Key Takeaways**
+
+**Only** **Function** and **UnaryOperator** support **both** andThen and compose for **chaining.**.
+
+     **andThen  →** executes current function first, then the next.
+    
+     **compose →** executes the argument function first, then the current one.
+
+This distinction is critical when building pipelines:
+
+ **Use andThen()** for **forward chaining** (left-to-right).
+    
+ **Use compose()** for **reverse chaining** (right-to-left).
+
+-----------------------------------------------------------------------------------------------------------------------
 ## 4. Lambda Syntax Variations
 
 ``` java
